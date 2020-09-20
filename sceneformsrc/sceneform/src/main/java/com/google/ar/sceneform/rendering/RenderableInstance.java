@@ -1,21 +1,19 @@
 package com.google.ar.sceneform.rendering;
 
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.annotation.Size;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
+
 import com.google.android.filament.Engine;
 import com.google.android.filament.Entity;
 import com.google.android.filament.EntityInstance;
 import com.google.android.filament.EntityManager;
-
 import com.google.android.filament.RenderableManager;
 import com.google.android.filament.TransformManager;
 import com.google.android.filament.gltfio.AssetLoader;
 import com.google.android.filament.gltfio.FilamentAsset;
-import com.google.android.filament.gltfio.ResourceLoader;
-
-
 import com.google.ar.sceneform.collision.Box;
 import com.google.ar.sceneform.common.TransformProvider;
 import com.google.ar.sceneform.math.Matrix;
@@ -25,11 +23,10 @@ import com.google.ar.sceneform.utilities.ChangeId;
 import com.google.ar.sceneform.utilities.LoadHelper;
 import com.google.ar.sceneform.utilities.Preconditions;
 import com.google.ar.sceneform.utilities.SceneformBufferUtils;
+
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-
-import java.nio.IntBuffer;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -64,16 +61,17 @@ public class RenderableInstance {
 
   private final TransformProvider transformProvider;
   private final Renderable renderable;
-  @Nullable private Renderer attachedRenderer;
+  @Nullable
+  private Renderer attachedRenderer;
   @Entity private int entity = 0;
   @Entity private int childEntity = 0;
   int renderableId = ChangeId.EMPTY_ID;
 
-  
 
 
 
-  
+
+
   @Nullable
   FilamentAsset filamentAsset;
 
@@ -109,7 +107,7 @@ public class RenderableInstance {
         .register(this, new CleanupCallback(entity, childEntity));
   }
 
-  
+
   void createFilamentAssetModelInstance() {
     if (renderable.getRenderableData() instanceof RenderableInternalFilamentAssetData) {
       RenderableInternalFilamentAssetData renderableData =
@@ -169,7 +167,7 @@ public class RenderableInstance {
     }
   }
 
-  
+
   void createGltfModelInstance() {return ;}
 
 
@@ -199,14 +197,14 @@ public class RenderableInstance {
 
 
 
-  
+
 
 
 
 
 
   @Nullable
-  
+
   public FilamentAsset getFilamentAsset() {
     return filamentAsset;
   }
@@ -244,7 +242,6 @@ public class RenderableInstance {
     this.skinningModifier = skinningModifier;
   }
 
-  
 
 
 
@@ -260,7 +257,8 @@ public class RenderableInstance {
 
 
 
-  
+
+
   private void setupSkeleton(IRenderableInternalData renderableInternalData) {return ;}
 
 
@@ -285,7 +283,7 @@ public class RenderableInstance {
     }
   }
 
-  
+
   private void attachFilamentAssetToRenderer() {
     FilamentAsset currentFilamentAsset = filamentAsset;
     if (currentFilamentAsset != null) {
@@ -305,7 +303,7 @@ public class RenderableInstance {
     attachFilamentAssetToRenderer();
   }
 
-  
+
   void detachFilamentAssetFromRenderer() {
     FilamentAsset currentFilamentAsset = filamentAsset;
     if (currentFilamentAsset != null) {
@@ -375,7 +373,7 @@ public class RenderableInstance {
     return cachedRelativeTransformInverse;
   }
 
-  
+
   private void updateSkinning(boolean force) {return ;}
 
 

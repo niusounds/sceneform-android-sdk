@@ -1,10 +1,11 @@
 package com.google.ar.sceneform;
 
 import android.media.Image;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.ar.sceneform.collision.Collider;
 import com.google.ar.sceneform.collision.CollisionSystem;
@@ -16,6 +17,7 @@ import com.google.ar.sceneform.utilities.AndroidPreconditions;
 import com.google.ar.sceneform.utilities.EnvironmentalHdrParameters;
 import com.google.ar.sceneform.utilities.LoadHelper;
 import com.google.ar.sceneform.utilities.Preconditions;
+
 import java.util.ArrayList;
 
 /**
@@ -89,7 +91,8 @@ public class Scene extends NodeParent {
   private final Camera camera;
   @Nullable private final Sun sunlightNode;
   @Nullable private final SceneView view;
-  @Nullable private LightProbe lightProbe;
+  @Nullable
+  private LightProbe lightProbe;
   private boolean lightProbeSet = false;
   private boolean isUnderTesting = false;
 

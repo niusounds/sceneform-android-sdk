@@ -1,8 +1,9 @@
 package com.google.ar.sceneform;
 
-import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
+import androidx.annotation.Nullable;
 
 import com.google.ar.sceneform.collision.Collider;
 import com.google.ar.sceneform.collision.CollisionShape;
@@ -17,10 +18,10 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.RenderableInstance;
 import com.google.ar.sceneform.rendering.Renderer;
-
 import com.google.ar.sceneform.utilities.AndroidPreconditions;
 import com.google.ar.sceneform.utilities.ChangeId;
 import com.google.ar.sceneform.utilities.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -177,7 +178,8 @@ public class Node extends NodeParent implements TransformProvider {
    * </ul>
    */
   // The node's parent could be a Node or the scene.
-  @Nullable NodeParent parent;
+  @Nullable
+  NodeParent parent;
 
   // Local transformation fields.
   private final Vector3 localPosition = new Vector3();

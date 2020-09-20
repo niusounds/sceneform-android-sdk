@@ -1,9 +1,11 @@
 package com.google.ar.sceneform;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
+
 import com.google.ar.sceneform.utilities.AndroidPreconditions;
 import com.google.ar.sceneform.utilities.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
