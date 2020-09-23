@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         ViewRenderable.builder()
             .setView(this, imageView)
+            .setSizer { view ->
+                val scale = 1.0 / view.height.toDouble() * 0.5
+                Vector3((view.width * scale).toFloat(), (view.height * scale).toFloat(), 0.01f)
+            }
             .build()
             .thenAccept {
                 viewRenderable = it
