@@ -3,6 +3,7 @@ package com.niusounds.scrrcv.ar
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.renderscript.RenderScript
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private val arFragment: ArFragment by lazy { ar_fragment as ArFragment }
     private var viewRenderable: Renderable? = null
     private val imageView: ImageView by lazy { ImageView(this) }
+
+    private val renderScript by lazy { RenderScript.create(this) }
 
     private var udpReceiver: UdpReceiver? = null
 
@@ -76,8 +79,10 @@ class MainActivity : AppCompatActivity() {
                 it.get(data)
                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
 
+                val modifiedBitmap = BitmapChromaKey(renderScript).chromaKey(bitmap)
+
                 runOnUiThread {
-                    imageView.setImageDrawable(BitmapDrawable(resources, bitmap))
+                    imageView.setImageDrawable(BitmapDrawable(resources, modifiedBitmap))
                 }
 
             } catch (e: IOException) {
@@ -90,5 +95,10 @@ class MainActivity : AppCompatActivity() {
         udpReceiver?.close()
         udpReceiver = null
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        renderScript.finish()
+        super.onDestroy()
     }
 }
