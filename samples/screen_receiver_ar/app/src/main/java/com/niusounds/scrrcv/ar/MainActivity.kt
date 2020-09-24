@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.FixedHeightViewSizer
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -20,6 +21,8 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     private val arFragment: ArFragment by lazy { ar_fragment as ArFragment }
     private var viewRenderable: Renderable? = null
+    private var anchorNode: AnchorNode? = null
+    private var transformableNode: TransformableNode? = null
     private val imageView: ImageView by lazy { ImageView(this) }
 
     private val renderScript by lazy { RenderScript.create(this) }
@@ -32,10 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         ViewRenderable.builder()
             .setView(this, imageView)
-            .setSizer { view ->
-                val scale = 1.0 / view.height.toDouble() * 0.5
-                Vector3((view.width * scale).toFloat(), (view.height * scale).toFloat(), 0.01f)
-            }
+            .setSizer(FixedHeightViewSizer(0.5f))
             .build()
             .thenAccept {
                 viewRenderable = it
@@ -47,18 +47,23 @@ class MainActivity : AppCompatActivity() {
 
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val viewRenderable = this.viewRenderable ?: return@setOnTapArPlaneListener
+            if (anchorNode != null) {
+                anchorNode?.anchor = hitResult.createAnchor()
+                transformableNode?.select()
+                return@setOnTapArPlaneListener
+            }
 
             val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor).apply {
+            anchorNode = AnchorNode(anchor).apply {
                 setParent(arFragment.arSceneView.scene)
             }
 
-            val model = TransformableNode(arFragment.transformationSystem).apply {
+            transformableNode = TransformableNode(arFragment.transformationSystem).apply {
                 setParent(anchorNode)
                 renderable = viewRenderable
                 select()
             }
-
+            arFragment.arSceneView.planeRenderer.isEnabled = false // hide floor dots
         }
     }
 
