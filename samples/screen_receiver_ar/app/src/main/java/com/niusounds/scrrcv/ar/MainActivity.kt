@@ -1,25 +1,29 @@
 package com.niusounds.scrrcv.ar
 
+import android.content.ContentValues
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.media.CamcorderProfile
 import android.os.Bundle
+import android.provider.MediaStore
 import android.renderscript.RenderScript
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.FixedHeightViewSizer
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.samples.videorecording.VideoRecorder
+import com.google.ar.sceneform.samples.videorecording.WritingArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 
+
 class MainActivity : AppCompatActivity() {
-    private val arFragment: ArFragment by lazy { ar_fragment as ArFragment }
+    private val arFragment: WritingArFragment by lazy { ar_fragment as WritingArFragment }
     private var viewRenderable: Renderable? = null
     private var anchorNode: AnchorNode? = null
     private var transformableNode: TransformableNode? = null
@@ -28,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private val renderScript by lazy { RenderScript.create(this) }
 
     private var udpReceiver: UdpReceiver? = null
+
+    private val videoRecorder: VideoRecorder by lazy { VideoRecorder() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +70,43 @@ class MainActivity : AppCompatActivity() {
                 select()
             }
             arFragment.arSceneView.planeRenderer.isEnabled = false // hide floor dots
+        }
+
+        // Initialize the VideoRecorder.
+        val orientation = resources.configuration.orientation
+        videoRecorder.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation)
+        videoRecorder.setSceneView(arFragment.arSceneView)
+
+        recordButton.setOnClickListener { toggleRecording()/**/ }
+    }
+
+    private fun toggleRecording() {
+        if (!arFragment.hasWritePermission()) {
+//            Log.e(TAG, "Video recording requires the WRITE_EXTERNAL_STORAGE permission")
+            Toast.makeText(
+                this,
+                "Video recording requires the WRITE_EXTERNAL_STORAGE permission",
+                Toast.LENGTH_LONG
+            )
+                .show()
+            arFragment.launchPermissionSettings()
+            return
+        }
+        val recording = videoRecorder.onToggleRecord()
+        if (recording) {
+            recordButton.setImageResource(R.drawable.ic_stop)
+        } else {
+            recordButton.setImageResource(R.drawable.ic_videocam)
+            val videoPath = videoRecorder.videoPath.absolutePath
+            Toast.makeText(this, "Video saved: $videoPath", Toast.LENGTH_SHORT).show()
+//            Log.d(TAG, "Video saved: $videoPath")
+
+            // Send  notification of updated content.
+            val values = ContentValues()
+            values.put(MediaStore.Video.Media.TITLE, "Sceneform Video")
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+            values.put(MediaStore.Video.Media.DATA, videoPath)
+            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
         }
     }
 
