@@ -1,3 +1,5 @@
-# Screen Receiver sample
+# UDP Screen Receiver AR
 
-under construction
+Creates AR screen for [UDP Screen Sender](https://github.com/niusounds/screen-sender-android).
+
+Supports chroma key.
