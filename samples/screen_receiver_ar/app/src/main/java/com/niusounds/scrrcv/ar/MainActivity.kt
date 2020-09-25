@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        renderScript.finish()
+        renderScript.destroy()
         super.onDestroy()
     }
 }
